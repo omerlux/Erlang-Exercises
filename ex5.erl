@@ -287,25 +287,21 @@ sendNeighborsParallel({{_,_}, {Toi,Toj}, {Ci,Cj},Mindex}) ->
   PidUp = tileToPid(Toi-1,Toj), PidDown = tileToPid(Toi+1,Toj),
   % send them a message { From, Receiver, Target, Num of message}
 
-  try PidDown ! {{Toi,Toj}, {Toi+1,Toj}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _->valid; _:_->valid
+  case whereis(PidDown) of 
+	undefined -> valid;
+	_ -> PidDown ! {{Toi,Toj}, {Toi+1,Toj}, {Ci,Cj}, Mindex}
   end,
-  try PidLeft ! {{Toi,Toj}, {Toi,Toj-1}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-  _->valid; _:_->valid
+  case whereis(PidLeft) of 
+	undefined -> valid;
+	_ -> PidLeft ! {{Toi,Toj}, {Toi,Toj-1}, {Ci,Cj}, Mindex}
   end,
-  try PidRight ! {{Toi,Toj}, {Toi,Toj+1}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _->valid; _:_->valid
+  case whereis(PidRight) of 
+	undefined -> valid;
+	_ -> PidRight ! {{Toi,Toj}, {Toi,Toj+1}, {Ci,Cj}, Mindex} 
   end,
-  try PidUp ! {{Toi,Toj}, {Toi-1,Toj}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _->valid; _:_->valid
+  case whereis(PidUp) of 
+	undefined -> valid;
+	_ -> PidUp ! {{Toi,Toj}, {Toi-1,Toj}, {Ci,Cj}, Mindex}
   end.
 
 % sendNeighborsSerial - sending neighbors a new message targeted to to the Center - sending to SELF
@@ -334,25 +330,21 @@ passNeighborsParallel({{Fromi,Fromj}, {Toi,Toj}, {Ci,Cj},Mindex}) ->
   PidRight = tileToPid(Toi,Toj+1), PidLeft = tileToPid(Toi,Toj-1),
   PidUp = tileToPid(Toi-1,Toj), PidDown = tileToPid(Toi+1,Toj),
   % send them a message { From, Receiver, Target, Num of message}
-  try PidDown ! {{Fromi,Fromj}, {Toi+1,Toj}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _ -> void; _:_ -> void
+  case whereis(PidDown) of 
+	undefined -> valid;
+	_ -> PidDown ! {{Fromi,Fromj}, {Toi+1,Toj}, {Ci,Cj}, Mindex}
   end,
-  try PidLeft ! {{Fromi,Fromj}, {Toi,Toj-1}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _ -> void; _:_ -> void
+  case whereis(PidLeft) of 
+	undefined -> valid;
+	_ -> PidLeft ! {{Fromi,Fromj}, {Toi,Toj-1}, {Ci,Cj}, Mindex}
   end,
-  try PidRight ! {{Fromi,Fromj}, {Toi,Toj+1}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _ -> void; _:_ -> void
+  case whereis(PidRight) of 
+	undefined -> valid;
+	_ -> PidRight ! {{Fromi,Fromj}, {Toi,Toj+1}, {Ci,Cj}, Mindex}
   end,
-  try PidUp ! {{Fromi,Fromj}, {Toi-1,Toj}, {Ci,Cj}, Mindex} of
-    _ -> ok
-  catch
-    _ -> void; _:_ -> void
+  case whereis(PidUp) of 
+	undefined -> valid;
+	_ -> PidUp ! {{Fromi,Fromj}, {Toi-1,Toj}, {Ci,Cj}, Mindex}
   end.
 
 % passdNeighborsSerial - passing neighbors a new messege targeted to to the Center - sending to SELF
